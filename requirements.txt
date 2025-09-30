@@ -1,0 +1,6 @@
+django>=5
+daphne>=4
+channels>=4
+djangorestframework>=3.15
+djangochannelsrestframework>=1.2
+channels-redis>=4

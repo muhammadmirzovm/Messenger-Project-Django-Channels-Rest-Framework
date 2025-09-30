@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Room: {{ room.name }}</title>
+</head>
+<body>
+  {% if user.is_authenticated %}
+    <p>Hello, <b>{{ user.username }}</b> — <a href="{% url 'logout' %}">Logout</a></p>
+  {% else %}
+    <p><a href="{% url 'login' %}?next={{ request.path }}">Login</a> |
+       <a href="{% url 'signup' %}">Sign up</a></p>
+  {% endif %}
+
+  <p><a href="{% url 'index' %}">← Back to rooms</a></p>
+  <h2>Room: {{ room.name }}</h2>
+
+  <h3>Messages</h3>
+  <ul id="messages">
+    {% for m in messages %}
+      <li>
+        <b>{{ m.user.username }}:</b>
+        {{ m.text }}
+        <small>({{ m.created_at|date:"H:i" }})</small>
+      </li>
+    {% empty %}
+      <li>No messages yet</li>
+    {% endfor %}
+  </ul>
+
+  <input id="chat-message-input" type="text" placeholder="Type message..." {% if not user.is_authenticated %}disabled{% endif %}>
+  <button id="chat-message-submit" {% if not user.is_authenticated %}disabled{% endif %}>Send</button>
+
+  <script>
+    const roomId = '{{ room.id }}';
+    const IS_AUTH = '{{ user.is_authenticated|yesno:"true,false" }}';
+    const requestId = Math.random().toString(36).slice(2);
+    const wsURL = (location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/ws/chat/room/";
+    const socket = new WebSocket(wsURL);
+
+    function send(obj) { socket.send(JSON.stringify(obj)); }
+
+    function append(username, text) {
+      const li = document.createElement("li");
+      li.innerHTML = "<b>" + username + ":</b> " + text;
+      document.querySelector("#messages").appendChild(li);
+    }
+
+    socket.onopen = function () {
+      // subscribe to this room's stream
+      send({ action: "join_room", pk: roomId, request_id: requestId });
+    };
+
+    socket.onmessage = function (e) {
+      const data = JSON.parse(e.data);
+
+      // DCRF observer shape: { data: {text, user:{username}, ...}, action, pk }
+      if (data && data.data && data.data.text) {
+        const m = data.data;
+        append(m.user.username, m.text);
+      }
+
+      // server error responses (e.g., not authenticated or room not found)
+      if (data && data.detail) {
+        append("server", data.detail);
+      }
+    };
+
+    document.getElementById("chat-message-submit").onclick = function () {
+      const input = document.getElementById("chat-message-input");
+      const text = input.value.trim();
+      if (!text) return;
+      send({ action: "create_message", room: roomId, message: text });
+      input.value = "";
+    };
+
+    document.getElementById("chat-message-input").addEventListener("keyup", function (e) {
+      if (e.key === "Enter") {
+        document.getElementById("chat-message-submit").click();
+      }
+    });
+  </script>
+</body>
+</html>

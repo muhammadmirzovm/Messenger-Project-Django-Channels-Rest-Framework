@@ -1,0 +1,24 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Chat Rooms</title></head>
+<body>
+  {% if user.is_authenticated %}
+    <p>Hello, <b>{{ user.username }}</b> — <a href="{% url 'logout' %}">Logout</a></p>
+  {% else %}
+    <p><a href="{% url 'login' %}">Login</a> | <a href="{% url 'signup' %}">Sign up</a></p>
+  {% endif %}
+
+  <h3>Create or join a room</h3>
+  <form method="post">{% csrf_token %}
+    <input name="name" type="text" placeholder="Room name">
+    <button type="submit">Enter</button>
+  </form>
+
+  <h3>Rooms</h3>
+  <ul>
+    {% for r in rooms %}
+      <li><a href="{% url 'room' r.pk %}">{{ r.name }}</a></li>
+    {% empty %}
+      <li>No rooms yet</li>
+    {% endfor %}
+  </ul>
+</body></html>
