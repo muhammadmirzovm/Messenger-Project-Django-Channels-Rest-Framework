@@ -15,4 +15,6 @@ urlpatterns = [
     path("signup/", views.signup, name="signup"),
 
     path("accounts/login/", RedirectView.as_view(pattern_name="login", permanent=False)),
+    path("api/online/", views.online_users_api, name="online_users_api"),
+    path("api/room/<int:pk>/online/", views.room_online_users_api, name="room_online_users_api"),
 ]

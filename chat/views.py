@@ -3,10 +3,24 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.http import JsonResponse
+from django.contrib.auth import get_user_model
+from .presence import list_online_user_ids, room_online_user_ids
 
 from .models import Room
 from .forms import CustomUserCreationForm
 
+User = get_user_model()
+
+def online_users_api(request):
+    ids = list_online_user_ids()
+    users = list(User.objects.filter(id__in=ids).values("id", "username"))
+    return JsonResponse({"online": users})
+
+def room_online_users_api(request, pk: int):
+    ids = room_online_user_ids(int(pk))
+    users = list(User.objects.filter(id__in=ids).values("id", "username"))
+    return JsonResponse({"room_id": pk, "online": users})
 
 def index(request):
     if request.method == "POST":

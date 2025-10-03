@@ -15,6 +15,10 @@
   <p><a href="{% url 'index' %}">← Back to rooms</a></p>
   <h2>Room: {{ room.name }}</h2>
 
+  <!-- Online in this room -->
+  <h3>Online in this room</h3>
+  <ul id="room-online"><li>Loading…</li></ul>
+
   <h3>Messages</h3>
   <ul id="messages">
     {% for m in messages %}
@@ -31,12 +35,16 @@
   <input id="chat-message-input" type="text" placeholder="Type message..." {% if not user.is_authenticated %}disabled{% endif %}>
   <button id="chat-message-submit" {% if not user.is_authenticated %}disabled{% endif %}>Send</button>
 
+  <!-- CHAT WS -->
   <script>
-    const roomId = '{{ room.id }}';
-    const IS_AUTH = '{{ user.is_authenticated|yesno:"true,false" }}';
+    // ✅ Safe for linter:
+    const roomId    = Number('{{ room.id|escapejs }}');
+    const IS_AUTH   = '{{ user.is_authenticated|yesno:"true,false" }}' === 'true';
     const requestId = Math.random().toString(36).slice(2);
-    const wsURL = (location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/ws/chat/room/";
-    const socket = new WebSocket(wsURL);
+
+    // DCRF chat websocket (matches your router)
+    const chatURL = (location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/ws/chat/room/";
+    const socket = new WebSocket(chatURL);
 
     function send(obj) { socket.send(JSON.stringify(obj)); }
 
@@ -47,20 +55,19 @@
     }
 
     socket.onopen = function () {
-      // subscribe to this room's stream
       send({ action: "join_room", pk: roomId, request_id: requestId });
     };
 
     socket.onmessage = function (e) {
       const data = JSON.parse(e.data);
 
-      // DCRF observer shape: { data: {text, user:{username}, ...}, action, pk }
+      // DCRF observer payload
       if (data && data.data && data.data.text) {
         const m = data.data;
         append(m.user.username, m.text);
       }
 
-      // server error responses (e.g., not authenticated or room not found)
+      // server error responses
       if (data && data.detail) {
         append("server", data.detail);
       }
@@ -79,6 +86,52 @@
         document.getElementById("chat-message-submit").click();
       }
     });
+  </script>
+
+  <!-- ROOM PRESENCE WS -->
+  <script>
+    (function(){
+      if (!IS_AUTH) {
+        document.getElementById("room-online").innerHTML = "<li>Login to see who is online</li>";
+        return;
+      }
+
+      const presURL = (location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/ws/room/" + roomId + "/presence/";
+      const psock = new WebSocket(presURL);
+      let every = 20, timer = null;
+
+      function renderFromAPI(){
+        fetch("/api/room/" + roomId + "/online/")
+          .then(r=>r.json())
+          .then(d=>{
+            const list = (d.online || []).map(u=>"<li>"+u.username+"</li>").join("");
+            document.getElementById("room-online").innerHTML = list || "<li>No one online in this room</li>";
+          })
+          .catch(()=>{
+            document.getElementById("room-online").innerHTML = "<li>(offline)</li>";
+          });
+      }
+
+      function startHB(){
+        if (timer) clearInterval(timer);
+        timer = setInterval(function(){
+          if (psock.readyState === 1) psock.send(JSON.stringify({type:"heartbeat"}));
+        }, every * 1000);
+      }
+
+      psock.onmessage = function(e){
+        const msg = JSON.parse(e.data);
+        if (msg.type === "room_online"){
+          every = msg.heartbeat_every || every;
+          startHB();
+          renderFromAPI();
+        } else if (msg.type === "presence_event"){
+          renderFromAPI();
+        }
+      };
+
+      psock.onclose = function(){ if (timer) clearInterval(timer); };
+    })();
   </script>
 </body>
 </html>
