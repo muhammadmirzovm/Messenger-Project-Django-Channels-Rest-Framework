@@ -3,6 +3,7 @@
 ## 1) Create & activate venv
 ```bash
 python -m venv .venv && source .venv/bin/activate
+python -m pip install --upgrade pip setuptools wheel
 ```
 
 ## 2) Install deps
@@ -25,7 +26,7 @@ redis-server
 
 ## 5) Run server
 ```bash
-python manage.py runserver
+daphne -b 127.0.0.1 -p 8000 dcrf_messenger.asgi:application
 ```
 
 ## 6) Use the app
