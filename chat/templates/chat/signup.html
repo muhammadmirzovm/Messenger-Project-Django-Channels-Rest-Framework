@@ -1,10 +1,31 @@
 <!doctype html>
-<html><head><meta charset="utf-8"><title>Sign up</title></head>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign up</title>
+  <style>
+    :root{ --bg:#f2f5f7; --panel:#ffffff; --text:#0f1419; --muted:#5b6b79; --border:#e6ecf1; --blue:#3390ec; }
+    @media (prefers-color-scheme: dark){ :root{ --bg:#0e1621; --panel:#17212b; --text:#e9eef3; --muted:#a3b1bf; --border:#253341; --blue:#50a7ea; } }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans",sans-serif; display:grid; place-items:center; padding:24px}
+    .card{width:min(420px, 92vw); background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:24px; box-shadow:0 8px 24px rgba(15,20,25,.06)}
+    .card h2{margin:0 0 16px}
+    .card form p{margin:0 0 12px}
+    .card input{width:100%; padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text)}
+    .btn{width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--blue); background:var(--blue); color:#fff; cursor:pointer}
+    .muted{color:var(--muted); margin-top:12px}
+  </style>
+</head>
 <body>
-  <h2>Sign up</h2>
-  <form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Create account</button>
-  </form>
-  <p><a href="{% url 'login' %}">Login</a> | <a href="{% url 'index' %}">Home</a></p>
-</body></html>
+  <div class="card">
+    <h2>Create account</h2>
+    <form method="post">{% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn" type="submit">Create account</button>
+    </form>
+    <p class="muted"><a href="{% url 'login' %}">Login</a> · <a href="{% url 'index' %}">Home</a></p>
+  </div>
+</body>
+</html>

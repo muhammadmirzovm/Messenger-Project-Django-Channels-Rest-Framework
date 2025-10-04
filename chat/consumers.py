@@ -1,4 +1,3 @@
-# chat/consumers.py
 from channels.db import database_sync_to_async
 from djangochannelsrestframework.generics import GenericAsyncAPIConsumer
 from djangochannelsrestframework.observer import model_observer
@@ -8,7 +7,6 @@ from djangochannelsrestframework.decorators import action
 from .models import Room, Message
 from .serializers import RoomSerializer, MessageSerializer
 
-# ---- Your existing chat consumer (UNCHANGED) ----
 
 class ChatConsumer(ObserverModelInstanceMixin, GenericAsyncAPIConsumer):
     """
@@ -84,7 +82,6 @@ class ChatConsumer(ObserverModelInstanceMixin, GenericAsyncAPIConsumer):
             yield f"room__{room}"
 
 
-# ---- Presence consumers (NEW) ----
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.contrib.auth.models import AnonymousUser
 from django.conf import settings
@@ -122,7 +119,6 @@ class PresenceConsumer(AsyncJsonWebsocketConsumer):
         await self.channel_layer.group_add(self.group_name, self.channel_name)
 
         await sync_to_async(heartbeat)(_uid(user))
-        # notify others (optional)
         await self.channel_layer.group_send(self.group_name, {
             "type": "presence.update",
             "payload": {"event": "online", "user_id": _uid(user)}

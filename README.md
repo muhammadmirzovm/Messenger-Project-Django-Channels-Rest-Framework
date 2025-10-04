@@ -1,44 +1,25 @@
-# DCRF Messenger (Step-by-step)
+# DCRF Messenger
 
-## 1) Create & activate venv
+Realtime group chat built with **Django**, **Channels**, **DCRF (Django Channels REST Framework)**, and **Redis**.
+
+- Telegram-style UI (light/dark)
+- Day dividers: **Today / Yesterday / 03 Oct 2025**
+- Live **online users** (global + per-room) with counts
+- Mobile: **Users (N)** button opens a slide-in panel (right/left), backdrop + ✕ close
+- Immediate timestamps on new messages (no refresh)
+
+---
+
+## 0) Prerequisites
+
+- Python 3.11+ (3.12/3.13 OK)
+- Redis 6/7+ running at `127.0.0.1:6379`
+
+---
+
+## 1) Setup
+
 ```bash
 python -m venv .venv && source .venv/bin/activate
 python -m pip install --upgrade pip setuptools wheel
-```
-
-## 2) Install deps
-```bash
 pip install -r requirements.txt
-```
-
-## 3) Run migrations
-```bash
-python manage.py makemigrations
-python manage.py migrate
-python manage.py createsuperuser
-```
-
-## 4) Start Redis (in another terminal)
-```bash
-redis-server
-# or: docker run -p 6379:6379 --name chat-redis -d redis:7
-```
-
-## 5) Run server
-```bash
-daphne -b 127.0.0.1 -p 8000 dcrf_messenger.asgi:application
-```
-
-## 6) Use the app
-- Open http://127.0.0.1:8000/
-- Create or join a room, then open same room in second tab to test realtime
-- Click "Login" to authenticate before sending messages
-
-## WebSocket payload examples
-```json
-{"action":"create","request_id":"abc123","data":{"name":"Lobby"}}
-{"action":"join_room","pk":1,"request_id":"abc123","nickname":"Alice"}
-{"action":"create_message","room":1,"message":"Hello!"}
-{"action":"online_users","room":1}
-{"action":"leave_room","pk":1}
-```

@@ -8,6 +8,7 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -76,12 +77,12 @@ CHANNEL_LAYERS = {
         },
     },
 }
-# settings.py
+
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",  # database 1
+        "LOCATION": "redis://127.0.0.1:6379/1", 
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -92,7 +93,6 @@ CACHES = {
 PRESENCE_HEARTBEAT_SECONDS = 20      
 PRESENCE_TTL_SECONDS = 60  
 AUTH_USER_MODEL = "chat.User"
-# Redirects after auth
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"

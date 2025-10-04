@@ -34,7 +34,6 @@ def index(request):
 @login_required
 def room(request, pk: int):
     room = get_object_or_404(Room, pk=pk)
-    # load past messages (persist across refresh)
     messages = room.messages.select_related("user").order_by("created_at")
     return render(request, "chat/room.html", {"room": room, "messages": messages})
 

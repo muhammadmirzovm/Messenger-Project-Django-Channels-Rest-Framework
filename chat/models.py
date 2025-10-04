@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 
 class User(AbstractUser):
-    # Extend later with avatar, bio, etc.
     pass
 
 class Room(models.Model):

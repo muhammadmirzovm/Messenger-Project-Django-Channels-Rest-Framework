@@ -1,79 +1,211 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Chat Rooms</title>
+  <style>
+    :root{
+      --bg: #f2f5f7;
+      --panel: #ffffff;
+      --text: #0f1419;
+      --muted: #5b6b79;
+      --border: #e6ecf1;
+      --blue: #3390ec; /* Telegram-ish */
+      --blue-weak:#e6f3ff;
+      --success:#3cb179;
+      --radius: 16px;
+      --shadow: 0 8px 24px rgba(15,20,25,.06);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg: #0e1621;
+        --panel: #17212b;
+        --text: #e9eef3;
+        --muted: #a3b1bf;
+        --border: #253341;
+        --blue: #50a7ea;
+        --blue-weak:#1d2a36;
+        --success:#4dd09e;
+        --shadow: none;
+      }
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); color:var(--text);
+      font: 14px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif;
+    }
+    .badge{
+      display:inline-block; min-width:1.5em; padding:2px 8px; margin-left:8px;
+      font-size:12px; line-height:1; border-radius:999px;
+      background:var(--blue-weak); color:var(--blue); border:1px solid var(--border);
+    }
+    a{color:var(--blue); text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    .app{height:100vh; display:grid; grid-template-columns: 340px 1fr; gap:16px; padding:16px; }
+    .sidebar{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); display:flex; flex-direction:column; overflow:hidden}
+    .main{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); display:flex; flex-direction:column; overflow:hidden}
+
+    .sb-head{padding:16px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px}
+    .avatar{width:32px; height:32px; border-radius:50%; background:var(--blue); color:white; display:grid; place-items:center; font-weight:700}
+    .sb-head .greet{font-weight:600}
+
+    .search{padding:12px 16px; border-bottom:1px solid var(--border)}
+    .search input{width:100%; padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text)}
+
+    .room-form{padding:12px 16px; border-bottom:1px solid var(--border); display:flex; gap:8px}
+    .room-form input{flex:1; padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text)}
+    .btn{padding:10px 14px; border-radius:12px; border:1px solid var(--blue); background:var(--blue); color:#fff; cursor:pointer}
+    .btn:hover{filter:brightness(1.05)}
+
+    .rooms{list-style:none; margin:0; padding:0; overflow:auto}
+    .rooms li{border-bottom:1px solid var(--border)}
+    .room-item{display:flex; gap:12px; align-items:center; padding:12px 16px}
+    .room-item:hover{background:var(--blue-weak)}
+    .room-item .rname{font-weight:600}
+    .chip{font-size:12px; color:var(--muted)}
+
+    .main-head{padding:16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between}
+    .main-body{flex:1; overflow:auto; padding:24px; display:grid; grid-template-columns: 1fr 320px; gap:16px}
+
+    .hero{background:linear-gradient(135deg, var(--blue) 0%, #7bc4ff 100%); color:#fff; border-radius:20px; padding:24px; min-height:180px; box-shadow:var(--shadow)}
+    .hero h2{margin:0 0 8px}
+    .hero p{margin:0; opacity:.9}
+
+    .panel{background:var(--panel); border:1px solid var(--border); border-radius:16px; overflow:hidden}
+    .panel h3{margin:0; padding:14px 16px; border-bottom:1px solid var(--border)}
+    .panel ul{list-style:none; margin:0; padding:8px 0; max-height:360px; overflow:auto}
+    .panel li{padding:10px 16px; display:flex; align-items:center; gap:10px}
+    .dot{width:8px; height:8px; border-radius:50%; background:var(--success)}
+
+    @media (max-width: 960px){
+      .app{grid-template-columns:1fr}
+      .main-body{grid-template-columns:1fr}
+    }
+
+    /* nicer scrollbars */
+    .rooms::-webkit-scrollbar, .panel ul::-webkit-scrollbar{width:10px}
+    .rooms::-webkit-scrollbar-thumb, .panel ul::-webkit-scrollbar-thumb{background:var(--border); border-radius:8px}
+  </style>
 </head>
 <body>
-  {% if user.is_authenticated %}
-    <p>Hello, <b>{{ user.username }}</b> — <a href="{% url 'logout' %}">Logout</a></p>
-  {% else %}
-    <p><a href="{% url 'login' %}">Login</a> | <a href="{% url 'signup' %}">Sign up</a></p>
-  {% endif %}
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sb-head">
+        {% if user.is_authenticated %}
+          <div class="avatar">{{ user.username|slice:":1"|upper }}</div>
+          <div>
+            <div class="greet">Hello, {{ user.username }}</div>
+            <div class="chip"><a href="{% url 'logout' %}">Logout</a></div>
+          </div>
+        {% else %}
+          <div class="avatar">?</div>
+          <div>
+            <div class="greet"><a href="{% url 'login' %}">Login</a> · <a href="{% url 'signup' %}">Sign up</a></div>
+            <div class="chip">Welcome</div>
+          </div>
+        {% endif %}
+      </div>
 
-  <h3>Create or join a room</h3>
-  <form method="post">{% csrf_token %}
-    <input name="name" type="text" placeholder="Room name">
-    <button type="submit">Enter</button>
-  </form>
+      <div class="search">
+        <input type="text" placeholder="Search rooms…" oninput="filterRooms(this.value)" />
+      </div>
 
-  <h3>Rooms</h3>
-  <ul>
-    {% for r in rooms %}
-      <li><a href="{% url 'room' r.pk %}">{{ r.name }}</a></li>
-    {% empty %}
-      <li>No rooms yet</li>
-    {% endfor %}
-  </ul>
+      <form class="room-form" method="post">{% csrf_token %}
+        <input name="name" type="text" placeholder="Create or join room">
+        <button class="btn" type="submit">Enter</button>
+      </form>
 
-  <!-- All Online Users -->
-  <h3>All online users</h3>
-  <ul id="online-users"><li>Loading…</li></ul>
+      <ul class="rooms" id="room-list">
+        {% for r in rooms %}
+          <li>
+            <a class="room-item" href="{% url 'room' r.pk %}">
+              <div class="avatar" aria-hidden="true">{{ r.name|slice:":1"|upper }}</div>
+              <div>
+                <div class="rname">{{ r.name }}</div>
+                <div class="chip">Room • #{{ r.pk }}</div>
+              </div>
+            </a>
+          </li>
+        {% empty %}
+          <li><div class="room-item"><div class="chip">No rooms yet</div></div></li>
+        {% endfor %}
+      </ul>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <div class="main-head">
+        <div><strong>Messenger</strong> <span class="chip">Home</span></div>
+        <div class="chip"><a href="{% url 'index' %}">Refresh</a></div>
+      </div>
+
+      <div class="main-body">
+        <section class="hero">
+          <h2>Welcome 👋</h2>
+          <p>Select a room on the left or create a new one. Online users appear on the right and update live.</p>
+        </section>
+
+        <section class="panel">
+          <h3>All online users <span class="badge" id="online-count">0</span></h3>
+          <ul id="online-users"><li style="color:var(--muted); padding:12px 16px">Loading…</li></ul>
+        </section>
+      </div>
+    </main>
+  </div>
 
   <script>
-    (function(){
-      // ✅ Keep the raw template valid JS for the editor:
-      const IS_AUTH = '{{ user.is_authenticated|yesno:"true,false" }}' === 'true';
+    // simple client-side filter
+    function filterRooms(q){
+      q = (q||'').toLowerCase();
+      document.querySelectorAll('#room-list .room-item').forEach(a=>{
+        const name = a.querySelector('.rname').textContent.toLowerCase();
+        a.parentElement.style.display = name.includes(q) ? '' : 'none';
+      });
+    }
 
-      if (!IS_AUTH) {
-        document.getElementById("online-users").innerHTML = "<li>Login to see online users</li>";
+    // Presence code
+    (function(){
+      const IS_AUTH = '{{ user.is_authenticated|yesno:"true,false" }}' === 'true';
+      if (!IS_AUTH){
+        document.getElementById('online-users').innerHTML = '<li style="padding:12px 16px; color:var(--muted)">Login to see online users</li>';
         return;
       }
-
-      const wsURL = (location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/ws/presence/";
+      const wsURL = (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws/presence/';
       const sock = new WebSocket(wsURL);
       let every = 20, timer = null;
 
       function renderFromAPI(){
-        fetch("/api/online/")
+        fetch('/api/online/')
           .then(r=>r.json())
           .then(d=>{
-            const list = (d.online || []).map(u=>`<li>${u.username}</li>`).join("");
-            document.getElementById("online-users").innerHTML = list || "<li>No one online yet</li>";
+              const online = Array.isArray(d.online) ? d.online : [];
+              const list = online.map(u=>`<li><span class="dot"></span> <span>${u.username}</span></li>`).join('');
+              document.getElementById('online-users').innerHTML = list || '<li style="padding:12px 16px; color:var(--muted)">No one online yet</li>';
+              const el = document.getElementById('online-count');
+              if (el) el.textContent = online.length;
           })
           .catch(()=>{
-            document.getElementById("online-users").innerHTML = "<li>(offline)</li>";
-          });
-      }
+              document.getElementById('online-users').innerHTML = '<li style="padding:12px 16px; color:var(--muted)">(offline)</li>';
+              const el = document.getElementById('online-count');
+              if (el) el.textContent = '–';
+            });
+}
+
 
       function startHB(){
         if (timer) clearInterval(timer);
-        timer = setInterval(function(){
-          if (sock.readyState === 1) sock.send(JSON.stringify({type:"heartbeat"}));
-        }, every * 1000);
+        timer = setInterval(function(){ if (sock.readyState === 1) sock.send(JSON.stringify({type:'heartbeat'})); }, every*1000);
       }
 
       sock.onmessage = function(e){
-        const msg = JSON.parse(e.data);
-        if (msg.type === "all_online"){
-          every = msg.heartbeat_every || every;
-          startHB();
-          renderFromAPI();
-        } else if (msg.type === "presence_event"){
-          renderFromAPI();
-        }
+        const msg = JSON.parse(e.data||'{}');
+        if (msg.type === 'all_online'){ every = msg.heartbeat_every || every; startHB(); renderFromAPI(); }
+        else if (msg.type === 'presence_event'){ renderFromAPI(); }
       };
-
       sock.onclose = function(){ if (timer) clearInterval(timer); };
     })();
   </script>
