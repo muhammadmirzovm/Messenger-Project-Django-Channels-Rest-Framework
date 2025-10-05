@@ -8,4 +8,4 @@ redis==6.4.0
 django-redis==6.0.0
 python-dotenv>=1.0
 whitenoise>=6.5
-tzdata;
+tzdata; python_version >= "3.9"
