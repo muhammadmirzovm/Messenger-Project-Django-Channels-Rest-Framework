@@ -6,8 +6,8 @@
   <title>Room: {{ room.name }}</title>
   <style>
     :root{
-      --bg: #f2f5f7; --panel:#ffffff; --text:#0f1419; --muted:#5b6b79; --border:#e6ecf1;
-      --blue:#3390ec; --mine:#dbf5ff; --their:#ffffff; --radius:18px; --shadow: 0 8px 24px rgba(15,20,25,.06);
+      --bg:#f2f5f7; --panel:#ffffff; --text:#0f1419; --muted:#5b6b79; --border:#e6ecf1;
+      --blue:#3390ec; --mine:#dbf5ff; --their:#ffffff; --shadow:0 8px 24px rgba(15,20,25,.06);
     }
     @media (prefers-color-scheme: dark){
       :root{
@@ -17,136 +17,55 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans",sans-serif;}
-
-    .app{height:100dvh; display:grid; grid-template-rows:auto 1fr; gap:16px; padding:16px}
-    .panel{background:var(--panel); border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow)}
-
-    .topbar{display:flex; align-items:center; justify-content:space-between; padding:12px 16px}
-    .topbar .left{display:flex; gap:10px; align-items:center}
-    .avatar{width:36px; height:36px; border-radius:50%; background:var(--blue); color:#fff; display:grid; place-items:center; font-weight:700}
+    body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans",sans-serif}
+    .app{height:100dvh;display:grid;grid-template-rows:auto 1fr;gap:16px;padding:16px}
+    .panel{background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px}
+    .topbar .left{display:flex;gap:10px;align-items:center}
+    .avatar{width:36px;height:36px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:700}
     .crumb a{color:var(--muted)}
-
-    .content{display:grid; grid-template-columns: 1fr 300px; gap:16px; min-height:0;}
-
-    .chat{  display:flex;flex-direction:column;min-height:0;}
-    .messages{list-style:none; margin:0; padding:20px;display:flex; flex-direction:column; gap:8px;flex:1 1 auto;overflow-y:auto;overscroll-behavior:contain;}
+    .content{display:grid;grid-template-columns:1fr 300px;gap:16px;min-height:0}
+    .chat{display:flex;flex-direction:column;min-height:0}
+    .messages{list-style:none;margin:0;padding:20px;display:flex;flex-direction:column;gap:8px;flex:1 1 auto;overflow-y:auto;overscroll-behavior:contain}
     .msg{display:flex}
     .msg.me{justify-content:flex-end}
-    .bubble{max-width:min(72ch, 78%); padding:10px 12px; border-radius:14px; background:var(--their); border:1px solid var(--border); position:relative}
-    .msg.me .bubble{background:var(--mine); border-color:transparent}
-    .bubble .who{font-weight:600; margin-bottom:2px}
-    .bubble .text{white-space:pre-wrap; word-wrap:break-word}
-    .meta{display:flex; gap:8px; align-items:center; justify-content:flex-end; font-size:12px; color:var(--muted); margin-top:4px}
-
-    .composer{display:flex; gap:8px; padding:12px;border-top:1px solid var(--border);position: sticky;bottom: 0;background: var(--panel);z-index: 1;padding-bottom: max(12px, env(safe-area-inset-bottom));}
-    .input{flex:1; padding:12px 14px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text)}
-    .btn{padding:12px 16px; border-radius:12px; border:1px solid var(--blue); background:var(--blue); color:#fff; cursor:pointer}
+    .bubble{max-width:min(72ch,78%);padding:10px 12px;border-radius:14px;background:var(--their);border:1px solid var(--border)}
+    .msg.me .bubble{background:var(--mine);border-color:transparent}
+    .who{font-weight:600;margin-bottom:2px}
+    .text{white-space:pre-wrap;word-wrap:break-word}
+    .meta{display:flex;gap:8px;align-items:center;justify-content:flex-end;font-size:12px;color:var(--muted);margin-top:4px}
+    .composer{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border);position:sticky;bottom:0;background:var(--panel);z-index:1;padding-bottom:max(12px, env(safe-area-inset-bottom))}
+    .input{flex:1;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text)}
+    .btn{padding:12px 16px;border-radius:12px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
     .btn:hover{filter:brightness(1.05)}
-
-    .side{background:var(--panel); border:1px solid var(--border); border-radius:16px; overflow:hidden}
-    .side h3{margin:0; padding:12px 16px; border-bottom:1px solid var(--border)}
-    #room-online{list-style:none; margin:0; padding:8px 0; max-height:calc(100% - 48px); overflow:auto}
+    .side{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+    .side h3{margin:0;padding:12px 16px;border-bottom:1px solid var(--border)}
+    #room-online{list-style:none;margin:0;padding:8px 0;max-height:calc(100% - 48px);overflow:auto}
     #room-online li{padding:10px 16px}
-    .dot{width:8px; height:8px; border-radius:50%; background:#3cb179; display:inline-block; margin-right:8px}
+    .dot{width:8px;height:8px;border-radius:50%;background:#3cb179;display:inline-block;margin-right:8px}
+    .date-divider{position:relative;text-align:center;margin:12px 0;color:var(--muted)}
+    .date-divider::before{content:"";position:absolute;left:0;right:0;top:50%;border-top:1px solid var(--border)}
+    .date-divider span{position:relative;background:var(--panel);padding:4px 10px;border:1px solid var(--border);border-radius:12px;font-size:12px}
+    .badge{display:inline-block;min-width:1.5em;padding:2px 8px;margin-left:8px;font-size:12px;line-height:1;border-radius:999px;background:var(--mine);color:var(--text);border:1px solid var(--border)}
+    .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+    .btn.sm{padding:6px 10px;border-radius:10px;font-size:12px}
 
-    /* Day divider (Telegram-style) */
-    .date-divider{
-      position:relative; text-align:center; margin:12px 0; color:var(--muted);
-    }
-    .date-divider::before{
-      content:""; position:absolute; left:0; right:0; top:50%;
-      border-top:1px solid var(--border); z-index:0;
-    }
-    .date-divider span{
-      position:relative; z-index:1;
-      background:var(--panel); padding:4px 10px;
-      border:1px solid var(--border); border-radius:12px; font-size:12px;
-    }
-    .badge{
-      display:inline-block; min-width:1.5em; padding:2px 8px; margin-left:8px;
-      font-size:12px; line-height:1; border-radius:999px;
-      background:var(--mine); color:var(--text); border:1px solid var(--border);
-    }
-    .btn.ghost{ background:transparent; color:var(--text); border:1px solid var(--border); }
-    .btn.ghost:hover{ background:var(--panel); }
-    .btn.sm{ padding:8px 10px; border-radius:10px; font-size:13px; }
-    #backdrop{ display:none; }
-    /* Header inside the side panel */
-    .side-head{
-      display:flex; align-items:center; justify-content:space-between;
-      padding:12px 16px; border-bottom:1px solid var(--border);
-      position: sticky; top:0; background:var(--panel); z-index:1;
-    }
-
-/* Close (×) button */
-    .icon-btn{
-      border:1px solid var(--border); background:transparent; color:var(--text);
-      border-radius:10px; padding:6px 10px; cursor:pointer; font-size:16px; line-height:1;
-    }
-    .icon-btn:hover{ background:var(--panel); }
-    @media (max-width: 960px){
-      .content{ grid-template-columns: 1fr; min-height:0; }
-      .chat{ display:flex; flex-direction:column; min-height:0; }
-      .messages{ flex:1 1 auto; overflow-y:auto; }
-
+    @media (max-width:960px){
+      .content{grid-template-columns:1fr}
       .side{
-        position: fixed; top:0; bottom:0; right:0;
-        width:min(88vw, 360px); max-width:100%;
-        transform: translateX(100%); transition: transform .25s ease;
-        z-index:20; box-shadow:0 10px 30px rgba(0,0,0,.25);
-        background:var(--panel); border:1px solid var(--border);
-        border-radius:16px 0 0 16px; overflow:auto;
+        position:fixed;top:0;bottom:0;right:0;width:min(88vw,360px);
+        transform:translateX(100%);transition:transform .25s ease;z-index:20;
+        box-shadow:0 10px 30px rgba(0,0,0,.25);border-radius:16px 0 0 16px
       }
-      .side.left{ left:0; right:auto; transform: translateX(-100%); border-radius:0 16px 16px 0; }
-      .side.open{ transform: translateX(0); }
-
-      #backdrop{
-        display:block; position:fixed; inset:0;
-        background:rgba(0,0,0,.35); opacity:0; pointer-events:none;
-        transition:opacity .2s ease; z-index:15;
-      }
-      #backdrop.show{ opacity:1; pointer-events:auto; }
+      .side.open{transform:translateX(0)}
+      #backdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .2s ease;z-index:15}
+      #backdrop.show{opacity:1;pointer-events:auto}
     }
-
-/* Hide the inline close button on desktop (since the panel is inline there) */
-@media (min-width: 961px){
-  #close-panel{ display:none; }
-}
-/* default (desktop) */
-.topbar-actions{ display:flex; align-items:center; gap:12px; }
-.topbar .left{ display:flex; gap:10px; align-items:center; }
-.who-logout{ color:var(--muted); display:flex; gap:8px; flex-wrap:wrap; }
-
-/* tighter button */
-.btn.sm{ padding:6px 10px; border-radius:10px; font-size:12px; }
-
-/* ultra-narrow fixes */
-@media (max-width:470px){
-  .topbar{ flex-wrap:wrap; gap:8px; padding:10px 12px; }
-  .topbar .left{ width:100%; min-width:0; }
-  .topbar .left > div{ min-width:0; }
-  .room-title{
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;
-    display:block;
-  }
-  .crumb{ font-size:12px; }
-
-  /* second row with Users button and account bits */
-  .topbar-actions{
-    width:100%;
-    display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;
-  }
-  .who-logout{
-    font-size:12px; color:var(--muted);
-    flex:1 1 auto; display:flex; gap:8px; justify-content:flex-end;
-  }
-  .who-logout .logout{ white-space:nowrap; }
-}
-
-
-    .messages::-webkit-scrollbar, #room-online::-webkit-scrollbar{width:10px}
-    .messages::-webkit-scrollbar-thumb, #room-online::-webkit-scrollbar-thumb{background:var(--border); border-radius:8px}
+    @media (min-width:961px){#close-panel{display:none}}
+    .topbar-actions{display:flex;align-items:center;gap:12px}
+    .who-logout{color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+    .messages::-webkit-scrollbar,#room-online::-webkit-scrollbar{width:10px}
+    .messages::-webkit-scrollbar-thumb,#room-online::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px}
   </style>
 </head>
 <body>
@@ -159,16 +78,14 @@
           <div class="crumb"><a href="{% url 'index' %}">← Back to rooms</a></div>
         </div>
       </div>
-
       <div class="topbar-actions">
         {% if user.is_authenticated %}
-          <button id="toggle-presence" class="btn ghost sm" type="button"
-              aria-expanded="false" aria-controls="side-panel">
+          <button id="toggle-presence" class="btn ghost sm" type="button" aria-expanded="false" aria-controls="side-panel">
             Users <span class="badge" id="room-title-online">0</span>
           </button>
           <div class="who-logout">
-          <span class="who">You: <strong>{{ user.username }}</strong></span>
-          <a class="logout" href="{% url 'logout' %}">Logout</a>
+            <span>You: <strong>{{ user.username }}</strong></span>
+            <a class="logout" href="{% url 'logout' %}">Logout</a>
           </div>
         {% else %}
           <a href="{% url 'login' %}?next={{ request.path }}">Login</a> · <a href="{% url 'signup' %}">Sign up</a>
@@ -176,16 +93,12 @@
       </div>
     </header>
 
-
     <div class="content">
-      <!-- Chat column -->
       <section class="panel chat">
         {% regroup messages by created_at|date:"Y-m-d" as day_groups %}
         <ul id="messages" class="messages">
           {% for group in day_groups %}
-            <!-- Server renders a raw YYYY-MM-DD key; JS beautifies to Today/Yesterday/etc -->
             <li class="date-divider" data-date="{{ group.grouper }}"><span>{{ group.grouper }}</span></li>
-
             {% for m in group.list %}
               <li class="msg {% if m.user_id == user.id %}me{% else %}them{% endif %}">
                 <div class="bubble">
@@ -206,19 +119,14 @@
         </div>
       </section>
 
-      <!-- Presence column -->
       <aside class="side" id="side-panel" aria-hidden="true" aria-labelledby="side-title">
-        <div class="side-head">
-          <h3 id="side-title">Online in this room</h3>
-          <button type="button" class="icon-btn" id="close-panel" aria-label="Close users panel">✕</button>
-        </div>
+        <h3 id="side-title" style="position:sticky;top:0;background:var(--panel);margin:0;padding:12px 16px;border-bottom:1px solid var(--border)">Online in this room</h3>
         <ul id="room-online"><li style="color:var(--muted); padding:12px 16px">Loading…</li></ul>
       </aside>
-
     </div>
   </div>
 
-  <!-- CHAT WS -->
+  <!-- Chat WS -->
   <script>
     const roomId    = Number('{{ room.id|escapejs }}');
     const IS_AUTH   = '{{ user.is_authenticated|yesno:"true,false" }}' === 'true';
@@ -227,71 +135,53 @@
 
     const chatURL = (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws/chat/room/';
     const socket = new WebSocket(chatURL);
+    const listEl = document.getElementById('messages');
 
     function send(obj){ socket.send(JSON.stringify(obj)); }
-
     function escapeHTML(s){ return (s||'').replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-    /* ---------- Date helpers (robust to ISO or 'dd-mm-YYYY HH:MM:SS') ---------- */
+    // Robust date parsing & day dividers
     function normalizeDate(input){
       if (!input) return null;
       if (input instanceof Date) return input;
-      const d1 = new Date(input);
-      if (!isNaN(d1)) return d1;
+      const d1 = new Date(input); if (!isNaN(d1)) return d1;
       const m = /^(\d{2})-(\d{2})-(\d{4})[ T](\d{2}):(\d{2}):(\d{2})$/.exec(String(input));
-      if (m){
-        const [, dd, mm, yyyy, hh, mi, ss] = m.map(Number);
-        return new Date(yyyy, mm - 1, dd, hh, mi, ss);
-      }
+      if (m){ const [,dd,mm,yyyy,hh,mi,ss] = m.map(Number); return new Date(yyyy,mm-1,dd,hh,mi,ss); }
       return null;
     }
     function keyFromDate(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
     function prettyDayLabelFromDate(d){
       const today = new Date(); today.setHours(0,0,0,0);
-      const target = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      const target = new Date(d.getFullYear(),d.getMonth(),d.getDate());
       const diff = Math.round((today - target)/86400000);
       if (diff === 0) return "Today";
       if (diff === 1) return "Yesterday";
-      return d.toLocaleDateString(undefined, { day:"2-digit", month:"short", year:"numeric" });
+      return d.toLocaleDateString(undefined,{day:"2-digit",month:"short",year:"numeric"});
     }
     function prettyDayLabelFromKey(key){
       const [y,m,dd] = key.split("-").map(Number);
-      return prettyDayLabelFromDate(new Date(y, m-1, dd));
+      return prettyDayLabelFromDate(new Date(y,m-1,dd));
     }
-    function formatTimeFromAny(val){
-      const d = normalizeDate(val);
-      if (!d) return "";
-      return d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
-    }
-
-    /* ---------- Initialize existing server-rendered dividers ---------- */
     let lastDividerKey = null;
     function initDividers(){
       const headers = document.querySelectorAll(".date-divider");
       headers.forEach(el=>{
         const key = el.dataset.date;
-        const span = el.querySelector("span");
-        span.textContent = prettyDayLabelFromKey(key);
+        el.querySelector("span").textContent = prettyDayLabelFromKey(key);
       });
       const last = headers[headers.length - 1];
       if (last) lastDividerKey = last.dataset.date;
     }
-    document.addEventListener("DOMContentLoaded", initDividers);
-
-    /* ---------- Live divider injection before new-day bubbles ---------- */
     function ensureDateDivider(created){
-      const d = normalizeDate(created);
-      if (!d) return;
-      const key = keyFromDate(d);
-      if (key === lastDividerKey) return;
+      const d = normalizeDate(created); if (!d) return;
+      const key = keyFromDate(d); if (key === lastDividerKey) return;
       lastDividerKey = key;
       const li = document.createElement("li");
-      li.className = "date-divider";
-      li.dataset.date = key;
+      li.className = "date-divider"; li.dataset.date = key;
       li.innerHTML = `<span>${prettyDayLabelFromDate(d)}</span>`;
-      const list = document.querySelector("#messages");
-      list.appendChild(li);
+      listEl.appendChild(li);
     }
+    document.addEventListener("DOMContentLoaded", initDividers);
 
     function append(username, text, created){
       ensureDateDivider(created);
@@ -302,43 +192,39 @@
         <div class="bubble">
           <div class="who">${escapeHTML(username)}</div>
           <div class="text">${escapeHTML(text).replace(/\n/g,'<br>')}</div>
-          <div class="meta"><span class="time">${formatTimeFromAny(created)}</span></div>
+          <div class="meta"><span class="time">${
+            (d=>d?d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}):"")(normalizeDate(created))
+          }</span></div>
         </div>`;
-      const list = document.querySelector("#messages");
-      list.appendChild(li);
-      list.scrollTop = list.scrollHeight;
+      listEl.appendChild(li);
+      listEl.scrollTop = listEl.scrollHeight;
     }
 
-    socket.onopen = function(){
-      send({ action: 'join_room', pk: roomId, request_id: requestId });
-    };
-
-    socket.onmessage = function(e){
+    socket.onopen = ()=>{ send({ action:'join_room', pk:roomId, request_id:requestId }); };
+    socket.onmessage = e=>{
       const data = JSON.parse(e.data||'{}');
       if (data && data.data && (data.data.text || data.data.message)){
         const m = data.data;
         const text = m.text || m.message;
-        const created = m.created_at || m.created || m.created_at_formatted || null; // prefer ISO if available
+        const created = m.created_at || m.created || m.created_at_formatted || null;
         const who = (m.user && m.user.username) ? m.user.username : 'user';
         append(who, text, created);
       }
       if (data && data.detail){ append('server', data.detail, null); }
     };
 
-    document.getElementById('chat-message-submit').onclick = function(){
+    document.getElementById('chat-message-submit').onclick = ()=>{
       const input = document.getElementById('chat-message-input');
-      const text = (input.value||'').trim();
-      if (!text) return;
-      send({ action: 'create_message', room: roomId, message: text });
+      const text = (input.value||'').trim(); if (!text) return;
+      send({ action:'create_message', room:roomId, message:text });
       input.value = '';
     };
-
-    document.getElementById('chat-message-input').addEventListener('keyup', function(e){
+    document.getElementById('chat-message-input').addEventListener('keyup', e=>{
       if (e.key === 'Enter') document.getElementById('chat-message-submit').click();
     });
   </script>
 
-  <!-- ROOM PRESENCE WS -->
+  <!-- Room presence WS -->
   <script>
     (function(){
       if (!IS_AUTH){
@@ -353,103 +239,51 @@
         fetch('/api/room/' + roomId + '/online/')
           .then(r=>r.json())
           .then(d=>{
-              const online = Array.isArray(d.online) ? d.online : [];
-              const list = online.map(u=>`<li><span class="dot"></span>${u.username}</li>`).join('');
-              document.getElementById('room-online').innerHTML =
-                list || '<li style="padding:12px 16px; color:var(--muted)">No one online in this room</li>';
-
-      
-              const titleBadge = document.getElementById('room-title-online');
-              if (titleBadge) titleBadge.textContent = online.length;
+            const online = Array.isArray(d.online) ? d.online : [];
+            const list = online.map(u=>`<li><span class="dot"></span>${u.username}</li>`).join('');
+            document.getElementById('room-online').innerHTML = list || '<li style="padding:12px 16px; color:var(--muted)">No one online in this room</li>';
+            const badge = document.getElementById('room-title-online'); if (badge) badge.textContent = online.length;
           })
           .catch(()=>{
-              document.getElementById('room-online').innerHTML =
-                '<li style="padding:12px 16px; color:var(--muted)">(offline)</li>';
-
-      
-              const titleBadge = document.getElementById('room-title-online');
-              if (titleBadge) titleBadge.textContent = '–';
+            document.getElementById('room-online').innerHTML = '<li style="padding:12px 16px; color:var(--muted)">(offline)</li>';
+            const badge = document.getElementById('room-title-online'); if (badge) badge.textContent = '–';
           });
-}
-
-      function startHB(){ if (timer) clearInterval(timer); timer = setInterval(function(){ if (psock.readyState === 1) psock.send(JSON.stringify({type:'heartbeat'})); }, every*1000); }
-
-      psock.onmessage = function(e){
+      }
+      function startHB(){ if (timer) clearInterval(timer); timer = setInterval(()=>{ if (psock.readyState === 1) psock.send(JSON.stringify({type:'heartbeat'})); }, every*1000); }
+      psock.onmessage = e=>{
         const msg = JSON.parse(e.data||'{}');
         if (msg.type === 'room_online'){ every = msg.heartbeat_every || every; startHB(); renderFromAPI(); }
         else if (msg.type === 'presence_event'){ renderFromAPI(); }
       };
-      psock.onclose = function(){ if (timer) clearInterval(timer); };
+      psock.onclose = ()=>{ if (timer) clearInterval(timer); };
     })();
   </script>
-<script>
-(function () {
-  const SIDE_DIR = 'right'; // 'right' or 'left'
 
-  const sidePanel = document.getElementById('side-panel');
-  const backdrop  = document.getElementById('backdrop');
-  const toggleBtn = document.getElementById('toggle-presence');
-  const closeBtn  = document.getElementById('close-panel');
+  <script>
+    (function () {
+      const sidePanel = document.getElementById('side-panel');
+      const toggleBtn = document.getElementById('toggle-presence');
+      const backdrop = document.createElement('div');
+      backdrop.id = 'backdrop';
+      document.body.appendChild(backdrop);
 
-  const mqMobile = window.matchMedia('(max-width: 960px)');
-  const isMobile = () => mqMobile.matches;
+      const mqMobile = window.matchMedia('(max-width: 960px)');
+      const isMobile = () => mqMobile.matches;
 
-  // ARIA/init
-  toggleBtn?.setAttribute('aria-controls', 'side-panel');
-  if (sidePanel && !sidePanel.hasAttribute('aria-hidden')) {
-    sidePanel.setAttribute('aria-hidden', 'true');
-  }
+      function lockScroll(lock){ document.body.style.overflow = lock ? 'hidden' : ''; }
+      function openPanel(){ sidePanel.classList.add('open'); toggleBtn?.setAttribute('aria-expanded','true'); if (isMobile()){ backdrop.classList.add('show'); lockScroll(true); } }
+      function closePanel(){ sidePanel.classList.remove('open'); toggleBtn?.setAttribute('aria-expanded','false'); backdrop.classList.remove('show'); lockScroll(false); }
 
-  function lockScroll(lock) { document.body.style.overflow = lock ? 'hidden' : ''; }
-
-  function openPanel() {
-    if (!sidePanel) return;
-    if (SIDE_DIR === 'left') sidePanel.classList.add('left');
-    else sidePanel.classList.remove('left');
-
-    sidePanel.classList.add('open');
-    sidePanel.setAttribute('aria-hidden', 'false');
-    toggleBtn?.setAttribute('aria-expanded', 'true');
-
-    if (isMobile()) {
-      backdrop?.classList.add('show');
-      lockScroll(true);
-    }
-    sidePanel.focus?.();
-  }
-
-  function closePanel() {
-    if (!sidePanel) return;
-    sidePanel.classList.remove('open');
-    sidePanel.setAttribute('aria-hidden', 'true');
-    toggleBtn?.setAttribute('aria-expanded', 'false');
-    backdrop?.classList.remove('show');
-    lockScroll(false);
-  }
-
-  // Toggle behavior
-  toggleBtn?.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!isMobile()) {
-      // Desktop: panel is inline; optional scroll-into-view
-      sidePanel?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      return;
-    }
-    sidePanel?.classList.contains('open') ? closePanel() : openPanel();
-  });
-
-  // Close interactions
-  closeBtn?.addEventListener('click', closePanel);
-  backdrop?.addEventListener('click', closePanel);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel(); });
-
-  // Reset state when leaving mobile
-  mqMobile.addEventListener?.('change', (e) => { if (!e.matches) closePanel(); });
-  window.addEventListener('resize', () => { if (!isMobile()) closePanel(); });
-})();
-</script>
-
-
-  <div id="backdrop" aria-hidden="true"></div>
+      toggleBtn?.addEventListener('click', e=>{
+        e.preventDefault();
+        if (!isMobile()){ sidePanel?.scrollIntoView({behavior:'smooth',block:'nearest'}); return; }
+        sidePanel?.classList.contains('open') ? closePanel() : openPanel();
+      });
+      backdrop.addEventListener('click', closePanel);
+      document.addEventListener('keydown', e=>{ if(e.key==='Escape') closePanel(); });
+      mqMobile.addEventListener?.('change', e=>{ if (!e.matches) closePanel(); });
+      window.addEventListener('resize', ()=>{ if (!isMobile()) closePanel(); });
+    })();
+  </script>
 </body>
 </html>

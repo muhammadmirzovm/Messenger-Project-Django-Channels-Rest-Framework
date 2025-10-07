@@ -4,28 +4,88 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Sign up</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
   <style>
     :root{ --bg:#f2f5f7; --panel:#ffffff; --text:#0f1419; --muted:#5b6b79; --border:#e6ecf1; --blue:#3390ec; }
-    @media (prefers-color-scheme: dark){ :root{ --bg:#0e1621; --panel:#17212b; --text:#e9eef3; --muted:#a3b1bf; --border:#253341; --blue:#50a7ea; } }
+    @media (prefers-color-scheme: dark){
+      :root{ --bg:#0e1621; --panel:#17212b; --text:#e9eef3; --muted:#a3b1bf; --border:#253341; --blue:#50a7ea; }
+    }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans",sans-serif; display:grid; place-items:center; padding:24px}
-    .card{width:min(420px, 92vw); background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:24px; box-shadow:0 8px 24px rgba(15,20,25,.06)}
+    body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans",sans-serif;display:grid;place-items:center;padding:24px}
+    .card{width:min(480px,92vw);background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:0 8px 24px rgba(15,20,25,.06)}
     .card h2{margin:0 0 16px}
-    .card form p{margin:0 0 12px}
-    .card input{width:100%; padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text)}
-    .btn{width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--blue); background:var(--blue); color:#fff; cursor:pointer}
-    .muted{color:var(--muted); margin-top:12px}
+    .muted{color:var(--muted)}
+    .card form p{margin:0 0 12px;position:relative}
+    .card input{width:100%;padding:10px 40px 10px 12px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text)}
+    .toggle-password{position:absolute;top:34px;right:12px;cursor:pointer;color:var(--muted)}
+    .btn{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
+    .errors{background:#ffe7e7;border:1px solid #ffb3b3;color:#7a1f1f;padding:10px 12px;border-radius:12px;margin-bottom:12px;font-size:13px}
+    .helptext{display:block;color:var(--muted);font-size:12px;margin-top:6px}
+    ul.errorlist{list-style:none;margin:8px 0 0;padding:0;color:#7a1f1f;font-size:13px}
   </style>
 </head>
 <body>
   <div class="card">
     <h2>Create account</h2>
-    <form method="post">{% csrf_token %}
-      {{ form.as_p }}
+
+    {% if form.errors %}
+      <div class="errors">
+        {% for field, errs in form.errors.items %}
+          {% for e in errs %}<div>{{ e }}</div>{% endfor %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <p>
+        {{ form.username.label_tag }}
+        {{ form.username }}
+        {% if form.username.help_text %}<span class="helptext">{{ form.username.help_text|safe }}</span>{% endif %}
+        {{ form.username.errors }}
+      </p>
+
+      <p>
+        {{ form.password1.label_tag }}
+        {{ form.password1 }}
+        <i class="fa-solid fa-eye toggle-password" id="togglePassword1" aria-label="Show password"></i>
+        {% if form.password1.help_text %}<span class="helptext">{{ form.password1.help_text|safe }}</span>{% endif %}
+        {{ form.password1.errors }}
+      </p>
+
+      <p>
+        {{ form.password2.label_tag }}
+        {{ form.password2 }}
+        <i class="fa-solid fa-eye toggle-password" id="togglePassword2" aria-label="Show password"></i>
+        {% if form.password2.help_text %}<span class="helptext">{{ form.password2.help_text|safe }}</span>{% endif %}
+        {{ form.password2.errors }}
+      </p>
+
       <button class="btn" type="submit">Create account</button>
     </form>
-    <p class="muted"><a href="{% url 'login' %}">Login</a> · <a href="{% url 'index' %}">Home</a></p>
+
+    <p class="muted" style="margin-top:12px"><a href="{% url 'login' %}">Login</a> · <a href="{% url 'index' %}">Home</a></p>
   </div>
+
+  <script>
+    function toggleVisibility(toggleId, inputId){
+      const icon = document.getElementById(toggleId);
+      const field = document.getElementById(inputId);
+      if (!icon || !field) return;
+      icon.addEventListener('click', ()=>{
+        const type = field.type === 'password' ? 'text' : 'password';
+        field.type = type;
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+      });
+    }
+    // Django's UserCreationForm uses these IDs by default:
+    toggleVisibility('togglePassword1', 'id_password1');
+    toggleVisibility('togglePassword2', 'id_password2');
+  </script>
 </body>
 </html>

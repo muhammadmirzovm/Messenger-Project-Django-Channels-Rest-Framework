@@ -4,28 +4,95 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Login</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
   <style>
     :root{ --bg:#f2f5f7; --panel:#ffffff; --text:#0f1419; --muted:#5b6b79; --border:#e6ecf1; --blue:#3390ec; }
-    @media (prefers-color-scheme: dark){ :root{ --bg:#0e1621; --panel:#17212b; --text:#e9eef3; --muted:#a3b1bf; --border:#253341; --blue:#50a7ea; } }
+    @media (prefers-color-scheme: dark){
+      :root{ --bg:#0e1621; --panel:#17212b; --text:#e9eef3; --muted:#a3b1bf; --border:#253341; --blue:#50a7ea; }
+    }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans",sans-serif; display:grid; place-items:center; padding:24px}
-    .card{width:min(420px, 92vw); background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:24px; box-shadow:0 8px 24px rgba(15,20,25,.06)}
+    body{
+      margin:0;background:var(--bg);color:var(--text);
+      font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans",sans-serif;
+      display:grid;place-items:center;padding:24px
+    }
+    .card{
+      width:min(440px,92vw);background:var(--panel);border:1px solid var(--border);
+      border-radius:16px;padding:24px;box-shadow:0 8px 24px rgba(15,20,25,.06)
+    }
     .card h2{margin:0 0 16px}
-    .field{margin:0 0 12px}
-    .field label{display:block; margin-bottom:6px; color:var(--muted)}
-    .field input{width:100%; padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text)}
-    .btn{width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--blue); background:var(--blue); color:#fff; cursor:pointer}
+    .muted{color:var(--muted)}
+    .field{margin:0 0 14px;position:relative}
+    .field label{display:block;margin:0 0 6px;color:var(--muted)}
+    .field input{
+      width:100%;padding:10px 40px 10px 12px;border-radius:12px;border:1px solid var(--border);
+      background:transparent;color:var(--text)
+    }
+    .toggle-password{
+      position:absolute;top:37px;right:12px;cursor:pointer;color:var(--muted)
+    }
+    /* Only left-aligned row now (no reset link) */
+    .inline{display:flex;align-items:center;gap:8px;margin:6px 0 12px}
+    .btn{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
+    .errors{
+      background:#ffe7e7;border:1px solid #ffb3b3;color:#7a1f1f;
+      padding:10px 12px;border-radius:12px;margin-bottom:12px;font-size:13px
+    }
+    .links{margin-top:12px}
   </style>
 </head>
 <body>
   <div class="card">
     <h2>Login</h2>
-    <form method="post">{% csrf_token %}
-      <div class="field"><label>Username</label><input type="text" name="username"></div>
-      <div class="field"><label>Password</label><input type="password" name="password"></div>
+
+    {% if form.non_field_errors %}
+      <div class="errors">
+        {% for e in form.non_field_errors %}<div>{{ e }}</div>{% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <div class="field">
+        <label for="id_username">Username</label>
+        <input type="text" name="username" id="id_username" autocomplete="username" required>
+      </div>
+
+      <div class="field">
+        <label for="id_password">Password</label>
+        <input type="password" name="password" id="id_password" autocomplete="current-password" required>
+        <i class="fa-solid fa-eye toggle-password" id="togglePassword" aria-label="Show password" title="Show/Hide password"></i>
+      </div>
+
+      <div class="inline">
+        <label style="display:flex;align-items:center;gap:6px">
+          <input type="checkbox" name="remember" value="1">
+          <span class="muted">Remember me</span>
+        </label>
+      </div>
+
       <button class="btn" type="submit">Login</button>
     </form>
+
+    <div class="links muted">
+      New here? <a href="{% url 'signup' %}">Create an account</a> · <a href="{% url 'index' %}">Home</a>
+    </div>
   </div>
+
+  <script>
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordField  = document.getElementById('id_password');
+    togglePassword.addEventListener('click', () => {
+      const type = passwordField.type === 'password' ? 'text' : 'password';
+      passwordField.type = type;
+      togglePassword.classList.toggle('fa-eye');
+      togglePassword.classList.toggle('fa-eye-slash');
+    });
+  </script>
 </body>
 </html>
