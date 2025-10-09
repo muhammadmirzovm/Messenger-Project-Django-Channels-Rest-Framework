@@ -60,6 +60,11 @@
       .side.open{transform:translateX(0)}
       #backdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .2s ease;z-index:15}
       #backdrop.show{opacity:1;pointer-events:auto}
+      .topbar{
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
     }
     @media (min-width:961px){#close-panel{display:none}}
     .topbar-actions{display:flex;align-items:center;gap:12px}

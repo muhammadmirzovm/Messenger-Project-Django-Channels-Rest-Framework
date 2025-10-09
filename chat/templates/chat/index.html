@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="shortcut icon" href="/Users/muhammadmirzo/Downloads/chat.png" type="image/x-icon">
   <title>Chat Rooms</title>
   <style>
     :root{
@@ -21,143 +22,144 @@
     a{color:var(--blue);text-decoration:none}
     a:hover{text-decoration:underline}
     .badge{display:inline-block;min-width:1.5em;padding:2px 8px;margin-left:8px;font-size:12px;line-height:1;border-radius:999px;background:var(--blue-weak);color:var(--blue);border:1px solid var(--border)}
-
+    .list-user li::marker{color: #3390ec;}
+    /* Layout */
     .app{height:100vh;display:grid;grid-template-columns:340px 1fr;gap:16px;padding:16px}
     .sidebar,.main{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden}
+
+    /* Sidebar header */
     .sb-head{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
     .avatar{width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:700}
     .greet{font-weight:600}
-    .search{padding:12px 16px;border-bottom:1px solid var(--border)}
+
+    /* Accordion */
+    .accordion{border-bottom:1px solid var(--border)}
+    .accordion summary{
+      cursor:pointer; list-style:none; padding:14px 16px; font-weight:600;
+      display:flex; align-items:center; justify-content:space-between;
+      background:transparent;
+    }
+    .accordion summary::-webkit-details-marker{display:none}
+    .accordion summary .chev{transition:transform .2s ease}
+    .accordion[open] summary .chev{transform:rotate(90deg)}
+    .acc-body{padding:0 0 12px}
+    .acc-body-inner{padding:0 16px 12px}
+
+    /* Search / form / rooms */
+    .search{padding:0 16px 12px}
     .search input,.room-form input{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text)}
-    .room-form{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;gap:8px}
+    .room-form{padding:0 16px 12px;display:flex;gap:8px}
     .btn{padding:10px 14px;border-radius:12px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
     .btn:hover{filter:brightness(1.05)}
-    .rooms{list-style:none;margin:0;padding:0;overflow:auto}
-    .rooms li{border-bottom:1px solid var(--border)}
+    .rooms{list-style:none;margin:0;padding:0;max-height:48vh;overflow:auto}
+    .rooms li{border-top:1px solid var(--border)}
     .room-item{display:flex;gap:12px;align-items:center;padding:12px 16px}
     .room-item:hover{background:var(--blue-weak)}
     .rname{font-weight:600}
     .chip{font-size:12px;color:var(--muted)}
+    .rooms::-webkit-scrollbar{width:10px}
+    .rooms::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px}
 
+    /* Main column */
     .main-head{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
     .main-body{flex:1;overflow:auto;padding:24px;display:grid;grid-template-columns:1fr 320px;gap:16px}
-    /* ==== BIG CREATIVE HERO ==== */
-.hero {
-  position: relative; overflow: hidden; color: #fff;
-  border-radius: 28px; box-shadow: var(--shadow);
-  padding: clamp(28px, 4vw, 56px);
-  min-height: clamp(420px, 58vh, 640px);
-  display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; gap: clamp(16px, 3vw, 40px);
-  background:
-    radial-gradient(1200px 600px at -10% -10%, rgba(255,255,255,.14), transparent 60%),
-    radial-gradient(900px 500px at 120% 120%, rgba(255,255,255,.10), transparent 60%),
-    linear-gradient(135deg, var(--blue) 0%, #7bc4ff 100%);
-}
-.hero::before{
-  content:""; position:absolute; inset:-25%;
-  background: conic-gradient(from 0turn, rgba(255,255,255,.18), rgba(255,255,255,0) 30%, rgba(255,255,255,.18) 60%, rgba(255,255,255,0) 100%);
-  filter: blur(70px); transform: rotate(8deg);
-  animation: heroSpin 20s linear infinite; pointer-events: none;
-}
-@keyframes heroSpin { to { transform: rotate(368deg); } }
 
-.hero-title{ margin:0 0 8px; font-weight: 900; letter-spacing:.2px; line-height:1.05;
-  font-size: clamp(36px, 5vw, 64px);
-}
-.hero-subtitle{ margin:0 0 18px; font-size: clamp(14px, 1.7vw, 18px); opacity:.98; max-width: 60ch; }
-.hero-cta{ display:flex; flex-wrap:wrap; gap:10px 12px; align-items:center; }
-.hero-btn{ background: rgba(255,255,255,.18); border-color: transparent; backdrop-filter: blur(6px); }
-.btn.ghost{ background: transparent; color: #fff; border:1px solid rgba(255,255,255,.6); }
-.pill{
-  display:inline-flex; align-items:center; gap:6px;
-  padding:6px 10px; border-radius:999px; font-size:12px;
-  background: rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.25);
-}
+    /* Hero */
+    .hero {
+      position: relative; overflow: hidden; color: #fff;
+      border-radius: 28px; box-shadow: var(--shadow);
+      padding: clamp(28px, 4vw, 56px);
+      min-height: clamp(420px, 58vh, 640px);
+      display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; gap: clamp(16px, 3vw, 40px);
+      background:
+        radial-gradient(1200px 600px at -10% -10%, rgba(255,255,255,.14), transparent 60%),
+        radial-gradient(900px 500px at 120% 120%, rgba(255,255,255,.10), transparent 60%),
+        linear-gradient(135deg, var(--blue) 0%, #7bc4ff 100%);
+    }
+    .hero::before{content:""; position:absolute; inset:-25%;
+      background: conic-gradient(from 0turn, rgba(255,255,255,.18), rgba(255,255,255,0) 30%, rgba(255,255,255,.18) 60%, rgba(255,255,255,0) 100%);
+      filter: blur(70px); transform: rotate(8deg); animation: heroSpin 20s linear infinite; pointer-events: none;}
+    @keyframes heroSpin { to { transform: rotate(368deg); } }
+    .hero-title{ margin:0 0 8px; font-weight: 900; letter-spacing:.2px; line-height:1.05; font-size: clamp(36px, 5vw, 64px);}
+    .hero-subtitle{ margin:0 0 18px; font-size: clamp(14px, 1.7vw, 18px); opacity:.98; max-width: 60ch; }
+    .hero-cta{ display:flex; flex-wrap:wrap; gap:10px 12px; align-items:center; }
+    .hero-btn{ background: rgba(255,255,255,.18); border-color: transparent; backdrop-filter: blur(6px); }
+    .btn.ghost{ background: transparent; color: #fff; border:1px solid rgba(255,255,255,.6); }
+    .pill{ display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; font-size:12px; background: rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.25);}
+    .hero-art{ position: relative; min-height: 320px; }
+    .ring{ position:absolute; inset:-40% -20% auto auto; aspect-ratio:1/1; width: 520px; border-radius: 50%;
+      background: conic-gradient(from 0turn, rgba(255,255,255,.0), rgba(255,255,255,.25), rgba(255,255,255,.0));
+      filter: blur(10px); opacity:.55; animation: ringSpin 28s linear infinite;}
+    @keyframes ringSpin { to { transform: rotate(360deg); } }
+    .phone{ position: absolute; right: clamp(0px, 1vw, 16px); top: 6%; width: clamp(240px, 26vw, 320px); height: clamp(420px, 52vh, 560px);
+      border-radius: 30px; padding: 14px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.35); box-shadow: 0 20px 60px rgba(0,0,0,.25);
+      transform: perspective(1200px) rotateY(-14deg) rotateX(4deg); backdrop-filter: blur(8px); animation: float 9s ease-in-out infinite;}
+    .statusbar{height:16px; border-radius:999px; background: rgba(255,255,255,.35); margin-bottom:12px;}
+    .screen{height: calc(100% - 28px); border-radius:22px; padding:14px 12px; background: rgba(0,0,0,.18); border: 1px solid rgba(255,255,255,.28);
+      display:flex; flex-direction:column; gap:8px; overflow:hidden;}
+    .bubble{ max-width: 75%; padding: 10px 12px; border-radius: 14px; font-size: 13px; line-height:1.35; background: #ffffff; color: #0f1419; border: 1px solid rgba(15,20,25,.08); }
+    .me{ margin-left: auto; background: #dbf5ff; border-color: transparent; }
+    .them{ margin-right: auto; }
+    @media (prefers-color-scheme: dark){
+      .bubble.them{ background:#1a232d; color:#e9eef3; border-color: #253341; }
+      .bubble.me{ background:#1f3d52; color:#e9eef3; }
+    }
+    .cloud{ position:absolute; border-radius: 18px; filter: blur(.3px);
+      background: rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.28);
+      width: 140px; height: 86px; animation: float 7.5s ease-in-out infinite;}
+    .cloud::after{ content:""; position:absolute; bottom:-10px; left:26px; width:18px; height:18px; background:inherit; border:inherit; border-radius:4px 12px 12px 12px; transform:rotate(45deg);}
+    .c1{ left:6%;  top:10%;  animation-duration:8.5s; }
+    .c2{ right:8%; bottom:14%; animation-duration:7s; }
+    .c3{ left:22%; bottom:10%; width:110px; height:68px; animation-duration:6.5s; }
+    @keyframes float { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-10px) } }
 
-/* Art: rotating ring + phone mock + floating clouds */
-.hero-art{ position: relative; min-height: 320px; }
-.ring{
-  position:absolute; inset:-40% -20% auto auto; aspect-ratio:1/1; width: 520px;
-  border-radius: 50%;
-  background: conic-gradient(from 0turn, rgba(255,255,255,.0), rgba(255,255,255,.25), rgba(255,255,255,.0));
-  filter: blur(10px); opacity:.55; animation: ringSpin 28s linear infinite;
-}
-@keyframes ringSpin { to { transform: rotate(360deg); } }
-
-.phone{
-  position: absolute; right: clamp(0px, 1vw, 16px); top: 6%;
-  width: clamp(240px, 26vw, 320px); height: clamp(420px, 52vh, 560px);
-  border-radius: 30px; padding: 14px;
-  background: rgba(255,255,255,.12);
-  border: 1px solid rgba(255,255,255,.35);
-  box-shadow: 0 20px 60px rgba(0,0,0,.25);
-  transform: perspective(1200px) rotateY(-14deg) rotateX(4deg);
-  backdrop-filter: blur(8px);
-  animation: float 9s ease-in-out infinite;
-}
-.statusbar{
-  height: 16px; border-radius: 999px; background: rgba(255,255,255,.35); margin-bottom: 12px;
-}
-.screen{
-  height: calc(100% - 28px); border-radius: 22px; padding: 14px 12px;
-  background: rgba(0,0,0,.18); border: 1px solid rgba(255,255,255,.28);
-  display:flex; flex-direction:column; gap:8px; overflow:hidden;
-}
-.bubble{
-  max-width: 75%; padding: 10px 12px; border-radius: 14px; font-size: 13px; line-height:1.35;
-  background: #ffffff; color: #0f1419; border: 1px solid rgba(15,20,25,.08);
-}
-.me{ margin-left: auto; background: #dbf5ff; border-color: transparent; }
-.them{ margin-right: auto; }
-@media (prefers-color-scheme: dark){
-  .bubble.them{ background:#1a232d; color:#e9eef3; border-color: #253341; }
-  .bubble.me{ background:#1f3d52; color:#e9eef3; }
-}
-
-.cloud{
-  position:absolute; border-radius: 18px; filter: blur(.3px);
-  background: rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.28);
-  width: 140px; height: 86px; animation: float 7.5s ease-in-out infinite;
-}
-.cloud::after{
-  content:""; position:absolute; bottom:-10px; left:26px; width:18px; height:18px;
-  background:inherit; border:inherit; border-radius:4px 12px 12px 12px; transform:rotate(45deg);
-}
-.c1{ left:6%;  top:10%;  animation-duration:8.5s; }
-.c2{ right:8%; bottom:14%; animation-duration:7s; }
-.c3{ left:22%; bottom:10%; width:110px; height:68px; animation-duration:6.5s; }
-
-@keyframes float { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-10px) } }
-
-/* responsive */
-@media (max-width: 960px){
-  .hero{ grid-template-columns: 1fr; min-height: 520px; padding: clamp(22px, 4vw, 36px); }
-  .hero-art{ min-height: 280px; }
-  .phone{ right: auto; left: 50%; transform: translateX(-50%) perspective(1200px) rotateY(0) rotateX(0); }
-}
-
-/* reduced motion */
-@media (prefers-reduced-motion: reduce){
-  .hero::before, .ring, .phone, .cloud{ animation: none !important; }
-}
-
-    .hero h2{margin:0 0 8px}
-    .hero p{margin:0;opacity:.9}
+    /* Panel (right column) */
     .panel{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden}
     .panel h3{margin:0;padding:14px 16px;border-bottom:1px solid var(--border)}
     .panel ul{list-style:none;margin:0;padding:8px 0;max-height:360px;overflow:auto}
     .panel li{padding:10px 16px;display:flex;align-items:center;gap:10px}
     .dot{width:8px;height:8px;border-radius:50%;background:var(--success)}
 
-    @media (max-width:960px){.app{grid-template-columns:1fr}.main-body{grid-template-columns:1fr}}
+    /* Responsiveness */
+    @media (max-width:1120px){ .main-body{grid-template-columns:1fr} }
+    @media (max-width:960px){
+      .app{grid-template-columns:1fr}
+      .rooms{max-height:unset}
+      .hero{ grid-template-columns: 1fr; min-height: 520px; padding: clamp(22px, 4vw, 36px); }
+      .hero-art{ min-height: 280px; }
+      .phone{ right: auto; left: 50%; transform: translateX(-50%) perspective(1200px) rotateY(0) rotateX(0); }
+      .sidebar{ display:flex; flex-direction:column; }
+    }
 
-    .rooms::-webkit-scrollbar,.panel ul::-webkit-scrollbar{width:10px}
-    .rooms::-webkit-scrollbar-thumb,.panel ul::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px}
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .hero::before, .ring, .phone, .cloud{ animation: none !important; }
+    }
+
+    /* --- mobile fixes (overrides) --- */
+    @media (max-width:960px){
+      /* let the whole page grow and scroll on small screens */
+      html, body { height:auto; min-height:100dvh; }
+      .app{ height:auto; min-height:100dvh; } /* was height:100vh */
+
+      /* allow the sidebar itself to scroll */
+      .sidebar{ overflow:auto; }
+
+      /* show mobile online-users accordion, hide right panel */
+      .acc-mobile-only{ display:block !important ;}
+      .panel{ display:none; }
+    }
+    /* default: keep mobile-only section hidden on desktop */
+    .acc-mobile-only{ display:none; }
+
+    /* nicer jump when clicking “Browse rooms” */
+    #room-list{ scroll-margin-top:80px; }
   </style>
 </head>
 <body>
   <div class="app">
-    <aside class="sidebar">
+    <!-- LEFT SIDEBAR with accordions -->
+    <aside class="sidebar" aria-label="Sidebar">
       <div class="sb-head">
         {% if user.is_authenticated %}
           <div class="avatar">{{ user.username|slice:":1"|upper }}</div>
@@ -174,31 +176,58 @@
         {% endif %}
       </div>
 
-      <div class="search">
-        <input type="text" placeholder="Search rooms…" oninput="filterRooms(this.value)">
-      </div>
+      <!-- Rooms accordion -->
+      <details class="accordion" id="acc-rooms" open>
+        <summary>
+          <span>Rooms</span>
+          <span class="chev">▶</span>
+        </summary>
+        <div class="acc-body">
+          <div class="search">
+            <input type="text" placeholder="Search rooms…" oninput="filterRooms(this.value)">
+          </div>
 
-      <form class="room-form" method="post">{% csrf_token %}
-        <input name="name" type="text" placeholder="Create or join room">
-        <button class="btn" type="submit">Enter</button>
-      </form>
+          <form class="room-form" method="post">{% csrf_token %}
+            <input name="name" type="text" placeholder="Create or join room">
+            <button class="btn" type="submit">Enter</button>
+          </form>
 
-      <ul class="rooms" id="room-list">
-        {% for r in rooms %}
-          <li>
-            <a class="room-item" href="{% url 'room' r.pk %}">
-              <div class="avatar" aria-hidden="true">{{ r.name|slice:":1"|upper }}</div>
-              <div>
-                <div class="rname">{{ r.name }}</div>
-              </div>
-            </a>
-          </li>
-        {% empty %}
-          <li><div class="room-item"><div class="chip">No rooms yet</div></div></li>
-        {% endfor %}
-      </ul>
+          <div class="acc-body-inner">
+            <h2 style="padding:0 0 8px; margin:0; font-size:14px; color:var(--muted)">Available rooms</h2>
+            <ul class="rooms" id="room-list">
+              {% for r in rooms %}
+                <li>
+                  <a class="room-item" href="{% url 'room' r.pk %}">
+                    <div class="avatar" aria-hidden="true">{{ r.name|slice:":1"|upper }}</div>
+                    <div><div class="rname">{{ r.name }}</div></div>
+                  </a>
+                </li>
+              {% empty %}
+                <li><div class="room-item"><div class="chip">No rooms yet</div></div></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </details>
+
+      <!-- Mobile-only Online Users accordion -->
+       
+      <details class="accordion acc-mobile-only" id="acc-online" open>
+        <summary>
+          <span><h3>All online users <span class="badge" id="online-count-panel">0</span></h3></span>
+          <span class="chev">▶</span>
+        </summary>
+        <div class="acc-body">
+          <div class="acc-body-inner">
+            <ul class="list-user" id="online-users-mobile">
+              <li style="color:var(--muted); padding:12px 16px">Loading…</li>
+            </ul>
+          </div>
+        </div>
+      </details>
     </aside>
 
+    <!-- MAIN -->
     <main class="main">
       <div class="main-head">
         <div><strong>Messenger</strong> <span class="chip">Home</span></div>
@@ -206,43 +235,43 @@
       </div>
 
       <div class="main-body">
-       <section class="hero hero-xl" id="hero">
-  <div class="hero-copy">
-    <h1 class="hero-title">Welcome 👋</h1>
-    <p class="hero-subtitle">
-      Create or join a room. Real-time messages & presence — Telegram-style, fast and clean.
-    </p>
+        <!-- HERO -->
+        <section class="hero hero-xl" id="hero">
+          <div class="hero-copy">
+            <h1 class="hero-title">Welcome 👋</h1>
+            <p class="hero-subtitle">
+              Create or join a room. Real-time messages & presence — Telegram-style, fast and clean.
+            </p>
+            <div class="hero-cta">
+              <a class="btn hero-btn" href="#room-list">Browse rooms</a>
+              <a class="btn ghost" href="{% url 'index' %}">Refresh</a>
+              <span class="pill">⚡ Live <span class="badge" id="online-count-hero">0</span></span>
+              <span class="pill">🌓 Auto dark mode</span>
+              <span class="pill">🔒 Secure</span>
+            </div>
+          </div>
 
-    <div class="hero-cta">
-      <a class="btn hero-btn" href="#room-list">Browse rooms</a>
-      <a class="btn ghost" href="{% url 'index' %}">Refresh</a>
-      <span class="pill">⚡ Live <span id="online-count-hero" class="badge">0</span></span>
-      <span class="pill">🌓 Auto dark mode</span>
-      <span class="pill">🔒 Secure</span>
-    </div>
-  </div>
+          <!-- decorative phone mock -->
+          <div class="hero-art" aria-hidden="true">
+            <div class="ring"></div>
+            <div class="phone">
+              <div class="statusbar"></div>
+              <div class="screen">
+                <div class="bubble them">Hey! 👋</div>
+                <div class="bubble me">Hi! Ready to chat?</div>
+                <div class="bubble them">Join Room #12 — it’s live now.</div>
+                <div class="bubble me">On my way! 🚀</div>
+              </div>
+            </div>
+            <div class="cloud c1"></div>
+            <div class="cloud c2"></div>
+            <div class="cloud c3"></div>
+          </div>
+        </section>
 
-  <!-- decorative phone mock -->
-  <div class="hero-art" aria-hidden="true">
-    <div class="ring"></div>
-    <div class="phone">
-      <div class="statusbar"></div>
-      <div class="screen">
-        <div class="bubble them">Hey! 👋</div>
-        <div class="bubble me">Hi! Ready to chat?</div>
-        <div class="bubble them">Join Room #12 — it’s live now.</div>
-        <div class="bubble me">On my way! 🚀</div>
-      </div>
-    </div>
-    <div class="cloud c1"></div>
-    <div class="cloud c2"></div>
-    <div class="cloud c3"></div>
-  </div>
-</section>
-
-
+        <!-- RIGHT PANEL (hidden on mobile) -->
         <section class="panel">
-          <h3>All online users <span class="badge" id="online-count">0</span></h3>
+          <h3>All online users <span class="badge" id="online-count-panel">0</span></h3>
           <ul id="online-users"><li style="color:var(--muted); padding:12px 16px">Loading…</li></ul>
         </section>
       </div>
@@ -253,7 +282,7 @@
     function filterRooms(q){
       q = (q||'').toLowerCase();
       document.querySelectorAll('#room-list .room-item').forEach(a=>{
-        const name = a.querySelector('.rname').textContent.toLowerCase();
+        const name = a.querySelector('.rname')?.textContent.toLowerCase() || '';
         a.parentElement.style.display = name.includes(q) ? '' : 'none';
       });
     }
@@ -261,10 +290,21 @@
     // Global presence via WS + fallback REST
     (function(){
       const IS_AUTH = '{{ user.is_authenticated|yesno:"true,false" }}' === 'true';
+      const countTargets = ['online-count-hero', 'online-count-panel'];
+
+      function setCounts(val){
+        countTargets.forEach(id=>{ const el=document.getElementById(id); if (el) el.textContent = val; });
+      }
+
       if (!IS_AUTH){
-        document.getElementById('online-users').innerHTML = '<li style="padding:12px 16px; color:var(--muted)">Login to see online users</li>';
+        const msg = '<li style="padding:12px 16px; color:var(--muted)">Login to see online users</li>';
+        document.getElementById('online-users').innerHTML = msg;
+        const mob = document.getElementById('online-users-mobile');
+        if (mob) mob.innerHTML = msg; // mirror to mobile list
+        setCounts('–');
         return;
       }
+
       const wsURL = (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws/presence/';
       const sock = new WebSocket(wsURL);
       let every = 20, timer = null;
@@ -274,15 +314,19 @@
           .then(r=>r.json())
           .then(d=>{
             const online = Array.isArray(d.online) ? d.online : [];
-            const list = online.map(u=>`<li><span class="dot"></span> <span>${u.username}</span></li>`).join('');
-            document.getElementById('online-users').innerHTML = list || '<li style="padding:12px 16px; color:var(--muted)">No one online yet</li>';
-            const el = document.getElementById('online-count');
-            if (el) el.textContent = online.length;
+            const list = online.map(u=>`<li><span class="dot"></span> <span>${u.username}</span></li>`).join('')
+                      || '<li style="padding:12px 16px; color:var(--muted)">No one online yet</li>';
+            document.getElementById('online-users').innerHTML = list;
+            const mob = document.getElementById('online-users-mobile');
+            if (mob) mob.innerHTML = list; // mirror to mobile list
+            setCounts(online.length);
           })
           .catch(()=>{
-            document.getElementById('online-users').innerHTML = '<li style="padding:12px 16px; color:var(--muted)">(offline)</li>';
-            const el = document.getElementById('online-count');
-            if (el) el.textContent = '–';
+            const msg = '<li style="padding:12px 16px; color:var(--muted)">(offline)</li>';
+            document.getElementById('online-users').innerHTML = msg;
+            const mob = document.getElementById('online-users-mobile');
+            if (mob) mob.innerHTML = msg; // mirror to mobile list
+            setCounts('–');
           });
       }
       function startHB(){
