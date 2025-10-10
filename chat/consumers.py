@@ -21,7 +21,7 @@ class ChatConsumer(ObserverModelInstanceMixin, GenericAsyncAPIConsumer):
     serializer_class = RoomSerializer
     lookup_field = "pk"
 
-    @action() # done
+    @action() 
     async def join_room(self, pk, request_id: str, **kwargs):
         room = await database_sync_to_async(self.get_object)(pk=pk)
 
